@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat APP</title>
+</head>
+
+<body style="background: #222; color: orange;">
+    <h1>Chatting</h1>
+    <h2 id="onlineCount"></h2>
+
+    <input type="text" id="message" placeholder="Enter message">
+    <button id="sendBtn">Send</button>
+    <div id="messages"></div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+
+        // online feature..
+        const onlineCount = document.querySelector("#onlineCount")
+        socket.on("online-users", (count) => {
+            onlineCount.innerText = `Online(${count})`
+        })
+
+
+
+        // chatting feature..
+        const sendBtn = document.querySelector("#sendBtn")
+        const message = document.querySelector("#message")
+        const allMessages = document.querySelector("#messages")
+
+
+        sendBtn.addEventListener('click', () => {
+            const mssg = message.value
+            socket.emit('user-message', mssg)
+            message.value = ""
+        })
+
+
+        socket.on('message', (message) => {
+            const p = document.createElement('p')
+            p.innerText = message
+            allMessages.appendChild(p)
+        })
+    </script>
+</body>
+
+</html>
